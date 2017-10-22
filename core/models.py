@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.core import validators
 from helpers.cpf import validate_CPF
+from helpers.barcode import GTIN
 # Create your models here.
 
 #class Cachorro(models.Model):
@@ -51,3 +52,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 	def get_short_name(self):
 		return str(self.username).split(" ")[0]
+
+
+class Product(models.Model):
+	nome = models.CharField('Nome', max_length=128, unique=True)
+	peso = models.FloatField('Peso', max_length=128),
+	preco = models.FloatField('Preco', max_length=8)
+	imagem = models.ImageField(upload_to= 'Server/Imagem')
+	barcode = models.IntegerField('Barcode', unique=True, validators=[GTIN])
+#	is_staff = models.BooleanField('Equipe', default=True)
+#	is_active = models.BooleanField('Ativo', default=True)
+#	date_created = models.DateTimeField('Data de criacao', auto_now_add=True)

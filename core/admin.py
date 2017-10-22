@@ -28,7 +28,8 @@ class UserAdmin(BaseUserAdmin):
 	search_fields = ['username', 'id']
 
 
-
+class ProductAdmin(admin.ModelAdmin):
+    pass
 
 
 #PARA MOSTRAR NO PAINEL DE ADMIN
