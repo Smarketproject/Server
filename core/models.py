@@ -36,7 +36,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	#modified = models.DateTimeField('Modificado em', auto_now=True)
 
 	class Meta:
-		verbose_name = 'Usuartio'
+		verbose_name = 'Usuario'
 		verbose_name_plural = 'Usuarios'
 
 	def __str__(self):
