@@ -20,6 +20,7 @@ from rest_framework import routers
 
 router=routers.DefaultRouter()
 router.register(r'user', views.UserViewSet)
+router.register(r'user', views.ProductViewSet)
 
 
 
@@ -27,6 +28,7 @@ router.register(r'user', views.UserViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
     url(r'^', include(router.urls)),
 
 

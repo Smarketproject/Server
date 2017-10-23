@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'helpers',
-    'rest_framework',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -71,6 +71,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'smarket.wsgi.application'
+
+
+#MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'Imagem')
+
+#MEDIA_URL = '/Imagem/'
 
 
 # Database

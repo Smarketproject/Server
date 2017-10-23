@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User
+from .models import Product
 
 
 
@@ -24,6 +25,25 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 				cpf = cpf
 			)
 		user_obj.set_password(password)
+		user_obj.save()
+
+
+		return validated_data
+
+class ProductSerializer(serializers.HyperlinkedModelSerializer):
+	class Meta:
+		model=Product
+		fields=('nome', 'peso', 'preco')
+
+	def create(self, validated_data):
+		nome = validated_data['nome']
+		peso = validated_data['peso']
+		preco = validated_data['preco']
+		user_obj = Product(
+				nome = nome,
+				peso = peso,
+				preco = preco
+			)
 		user_obj.save()
 
 

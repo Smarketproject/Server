@@ -38,7 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 	class Meta:
 		verbose_name = 'Usuario'
-		verbose_name_plural = 'Usuarios'
+		verbose_name_plural = 'Usuarios'	
 
 	def __str__(self):
 		return self.username
@@ -56,10 +56,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Product(models.Model):
 	nome = models.CharField('Nome', max_length=128, unique=True)
-	peso = models.FloatField('Peso', max_length=128),
+	peso = models.FloatField('Peso', max_length=8),
 	preco = models.FloatField('Preco', max_length=8)
-	imagem = models.ImageField(upload_to= 'Server/Imagem')
-	barcode = models.IntegerField('Barcode', unique=True, validators=[GTIN])
+	imagem = models.ImageField(upload_to= 'Imagem')
+#	barcode = models.IntegerField('Barcode', unique=True, validators=[GTIN])
 #	is_staff = models.BooleanField('Equipe', default=True)
 #	is_active = models.BooleanField('Ativo', default=True)
 #	date_created = models.DateTimeField('Data de criacao', auto_now_add=True)
+	class Meta:
+		pass

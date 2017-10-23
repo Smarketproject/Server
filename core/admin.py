@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Cachorro
 from .models import User
+from .models import Product
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .forms import UserAdminCreationForm, UserAdminForm
 
@@ -35,4 +36,5 @@ class ProductAdmin(admin.ModelAdmin):
 #PARA MOSTRAR NO PAINEL DE ADMIN
 admin.site.register(User, UserAdmin)
 admin.site.register(Cachorro, CachorroAdmin)
+admin.site.register(Product, ProductAdmin)
 
