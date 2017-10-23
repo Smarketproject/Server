@@ -65,3 +65,8 @@ class Product(models.Model):
 #	date_created = models.DateTimeField('Data de criacao', auto_now_add=True)
 	class Meta:
 		pass
+
+
+class Purchase(models.Model):
+	id_product = models.ForeignKey('Product') 
+	id_user = models.ForeignKey('User') 
