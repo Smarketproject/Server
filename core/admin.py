@@ -1,17 +1,9 @@
 from django.contrib import admin
-from .models import Cachorro
 from .models import User
 from .models import Product
 from .models import Purchase
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .forms import UserAdminCreationForm, UserAdminForm
-
-
-
-class CachorroAdmin(admin.ModelAdmin):
-    pass
-
-
 
 
 class UserAdmin(BaseUserAdmin):
@@ -30,16 +22,8 @@ class UserAdmin(BaseUserAdmin):
 	search_fields = ['username', 'id']
 
 
-class ProductAdmin(admin.ModelAdmin):
-    pass
-
-class PurchaseAdmin(admin.ModelAdmin):
-    pass
-
-
 #PARA MOSTRAR NO PAINEL DE ADMIN
 admin.site.register(User, UserAdmin)
-admin.site.register(Cachorro, CachorroAdmin)
-admin.site.register(Product, ProductAdmin)
-admin.site.register(Purchase, PurchaseAdmin)
+admin.site.register(Product)
+admin.site.register(Purchase)
 
