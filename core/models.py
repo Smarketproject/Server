@@ -55,10 +55,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Product(models.Model):
-	nome = models.CharField('Nome', max_length=128, unique=True)
-	peso = models.FloatField('Peso', max_length=8),
-	preco = models.FloatField('Preco', max_length=8)
-	imagem = models.ImageField(upload_to= 'Imagem')
+	name = models.CharField('Nome', max_length=128, unique=True)
+	weight = models.FloatField('Peso', max_length=8),
+	price = models.FloatField('Preco', max_length=8)
+	image = models.ImageField(upload_to= 'Imagem')
 #	barcode = models.IntegerField('Barcode', unique=True, validators=[GTIN])
 #	is_staff = models.BooleanField('Equipe', default=True)
 #	is_active = models.BooleanField('Ativo', default=True)
@@ -68,5 +68,9 @@ class Product(models.Model):
 
 
 class Purchase(models.Model):
-	id_product = models.ForeignKey('Product') 
 	id_user = models.ForeignKey('User') 
+
+class Purchase_Product(models.Model):
+	id_purchase = models.ForeignKey('Purchase')
+	id_product = models.ForeignKey('Product')
+	price = models.FloatField('Preco', max_length=8)
