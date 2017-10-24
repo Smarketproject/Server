@@ -17,6 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from core import views
 from rest_framework import routers
+from djoser import views as viewd
 
 router=routers.DefaultRouter()
 router.register(r'user', views.UserViewSet)
@@ -31,6 +32,11 @@ urlpatterns = [
 
     url(r'^', include(router.urls)),
 
+    url(r'^login/', viewd.TokenCreateView.as_view(), name='login2'),
+    
+    url(r'^logout/', viewd.TokenDestroyView.as_view(),name='logout2'),
+    
+    url(r'^me/$', viewd.UserView.as_view(), name='user'),
 
 
 ]
