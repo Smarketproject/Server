@@ -58,7 +58,7 @@ class Product(models.Model):
 	name = models.CharField('Nome', max_length=128, unique=True)
 	weight = models.FloatField('Peso', max_length=8),
 	price = models.FloatField('Preco', max_length=8)
-	image = models.ImageField(upload_to= 'Imagem')
+	image = models.ImageField(upload_to='images')
 #	barcode = models.IntegerField('Barcode', unique=True, validators=[GTIN])
 #	is_staff = models.BooleanField('Equipe', default=True)
 #	is_active = models.BooleanField('Ativo', default=True)

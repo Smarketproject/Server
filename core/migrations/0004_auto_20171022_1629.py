@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='product',
             name='imagem',
-            field=models.ImageField(default=django.utils.timezone.now, upload_to='Server/Imagem'),
+            field=models.ImageField(default=django.utils.timezone.now, upload_to='Server/images'),
             preserve_default=False,
         ),
         migrations.AlterField(
