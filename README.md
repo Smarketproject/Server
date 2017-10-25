@@ -27,15 +27,15 @@ OBS: Apartir do Login, toda requisição deverá conter o header 'Authorization'
 
 *Cadastro:
 
-http://localhost:8000/user/
+    http://localhost:8000/user/
 
-Method: Post
-{
-    "username": "",
-    "email": "",
-    "cpf": "",
-    "password": ""
-}
+    Method: Post
+    {
+        "username": "",
+        "email": "",
+        "cpf": "",
+        "password": ""
+    }
 
 Response: 200 OK
 
@@ -43,45 +43,46 @@ Response: 200 OK
 
 *Login:
 
-http://localhost:8000/login/
+    http://localhost:8000/login/
 
-Method: Post
-{
-    "password": "",
-    "username": ""
-}
+    Method: Post
+    {
+        "password": "",
+        "username": ""
+    }
 
-Response: 200 OK Exemplo: {
-  "auth_token": "8c21ff07f0011820a2617d8de49e19d9b053f825"
-}
+    Response: 200 OK Exemplo: {
+    "auth_token": "8c21ff07f0011820a2617d8de49e19d9b053f825"
+    }
 
 
 *Logout:
 
-http://localhost:8000/logout/
+    http://localhost:8000/logout/
 
-Method: Post
+    Method: Post
 
-Necessita do header 'Authorization'
+    Necessita do header 'Authorization'
 
-Exemplo: 'Authorization: Token 8c21ff07f0011820a2617d8de49e19d9b053f825'
+    Exemplo: 'Authorization: Token 8c21ff07f0011820a2617d8de49e19d9b053f825'
 
-Response: 200 OK 
+    Response: 200 OK 
 
 
 *Usuario:
 
-http://localhost:8000/me/
 
-Method: Get
+    http://localhost:8000/me/
 
-Necessita do header 'Authorization'
+    Method: Get
 
-Response: 
+    Necessita do header 'Authorization'
 
-200 OK e Informaçoes do Usuario
+    Response: 
 
-401 - "Token invalido" ou "As credenciais de autenticação não foram fornecidas."
+        200 OK e Informaçoes do Usuario
+
+        401 - "Token invalido" ou "As credenciais de autenticação não foram fornecidas."
 
 
 
