@@ -44,10 +44,18 @@ class Product(models.Model):
     def __str__(self):
         return str(self.name)
 
+    class Meta:
+        verbose_name = 'Produto'
+        verbose_name_plural = 'Produtos'
+
 
 class Purchase(models.Model):
     id_user = models.ForeignKey('User')
     products = models.ManyToManyField(Product)
+
+    class Meta:
+        verbose_name = 'Compra'
+        verbose_name_plural = 'Compras'
 
 # Nice! It could be even better tho. See this: https://docs.djangoproject.com/en/1.11/topics/db/examples/many_to_many/
 '''
