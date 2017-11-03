@@ -38,5 +38,7 @@ urlpatterns = [
     
     url(r'^me/$', viewd.UserView.as_view(), name='user'),
 
+    url(r'^teste/$', views.List.as_view(), name='user'),
+
 
 ]

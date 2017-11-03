@@ -10,7 +10,7 @@ from .models import Product
 class UserSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model=User
-		fields=('username', 'email', 'cpf', 'password')
+		fields=('username', 'email', 'cpf', 'password', 'id')
 		extra_kwargs = {"password":
 							{"write_only": True}
 							}
@@ -48,3 +48,4 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 
 
 		return validated_data
+
