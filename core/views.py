@@ -23,17 +23,34 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 
 
-
-
-class List(APIView):
+class Show_purchases(APIView):
 	permission_classes = [permissions.IsAuthenticated]
 	authentication_classes = (authentication.TokenAuthentication,)
 	def get(self, request, format=None):
 		us = self.request.user.id
 		#entry.objects.filter(blog__name='Beatles Blog')
 		#Blog.objects.filter(entry__headline__contains='Lennon')
-		obj = Purchase.objects.filter(id_user = us).values('products__name', 'id_user', 'id')
+		obj = Purchase.objects.filter(id_user = us).values('products__name', 'id_user', 'id', 'created_at')
 
 		return Response(obj)
 
-	
+
+class Show_products(APIView):
+	def get(self, request):
+		objs = Product.objects.all()#.values('id', 'name', 'price', 'weight')
+		return Response(objs.values())
+
+
+class Get_products(APIView):
+
+	def post(self, request):
+		
+		
+		obj = request.data
+		bar_code = obj.get('bar_code')
+		
+		
+		produto = Product.objects.filter(bar_code = bar_code).values()
+		
+		return Response(produto)
+

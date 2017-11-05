@@ -38,7 +38,10 @@ urlpatterns = [
     
     url(r'^me/$', viewd.UserView.as_view(), name='user'),
 
-    url(r'^teste/$', views.List.as_view(), name='user'),
+    url(r'^purchase/show$', views.Show_purchases.as_view(), name='Show_purchases'),
 
+    url(r'^product/showall$', views.Show_products.as_view(), name='Show_products'),
+
+    url(r'^product/scanner$', views.Get_products.as_view(), name='user')
 
 ]

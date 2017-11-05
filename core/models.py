@@ -40,7 +40,7 @@ class Product(models.Model):
     weight = models.FloatField('Peso', max_length=8),
     price = models.FloatField('Preco', max_length=8)
     image = models.ImageField(upload_to='images')
-
+    bar_code = models.CharField('Cod_barras', max_length=13)
     def __str__(self):
         return str(self.name)
 
@@ -52,7 +52,7 @@ class Product(models.Model):
 class Purchase(models.Model):
     id_user = models.ForeignKey('User')
     products = models.ManyToManyField(Product)
-
+    created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         verbose_name = 'Compra'
         verbose_name_plural = 'Compras'
