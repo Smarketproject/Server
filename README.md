@@ -83,6 +83,40 @@ Response: 200 OK
         200 OK e Informaçoes do Usuario
 
         401 - "Token invalido" ou "As credenciais de autenticação não foram fornecidas."
+        
+*Enviar codigo de barras:
+ 
+    http://localhost:8000/product/scanner
+    
+    Method: POST
+    
+    {
+    "bar_code" : ""
+    }
+    
+    Se tudo der certo, retorna o produto.(esta sem validadores por enquanto)
+    
+    
+*Mostrar Produtos:
+ 
+    http://localhost:8000/product/showall
+    
+    Method: GET
+    
+    Retorna todos os produtos.
+    
+ 
+*Mostrar Compras:
+     
+     http://localhost:8000/purchase/show
+     
+     Method: GET
+     
+     Necessita do header 'Authorization'
+
+     Retorna as compras do Usuario.
+     
+    
 
 
 
