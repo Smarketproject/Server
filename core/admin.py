@@ -1,7 +1,5 @@
 from django.contrib import admin
-from .models import User
-from .models import Product
-from .models import Purchase
+from .models import User, Product, Purchase, Item, QRCode, Validator, Cart
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .forms import UserAdminCreationForm, UserAdminForm
 
@@ -26,4 +24,7 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(Product)
 admin.site.register(Purchase)
-
+admin.site.register(Item)
+admin.site.register(Cart)
+admin.site.register(QRCode)
+admin.site.register(Validator)

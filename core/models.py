@@ -1,12 +1,7 @@
-import re  # Futuras Regex
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.core import validators
 from helpers.cpf import validate_CPF
-from helpers.barcode import GTIN
-
-
-# Nao esqueçam do makemigrations e migrate após a criaçao da model, para criar uma tabela no banco
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField('Username', max_length=128, unique=True)
@@ -19,7 +14,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         verbose_name = 'Usuario'
-        verbose_name_plural = 'Usuarios'
 
     def __str__(self):
         return self.username
@@ -34,7 +28,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return str(self.username).split(" ")[0]
 
-
 class Product(models.Model):
     name = models.CharField('Nome', max_length=128, unique=True)
     weight = models.FloatField('Peso', max_length=8),
@@ -46,21 +39,48 @@ class Product(models.Model):
 
     class Meta:
         verbose_name = 'Produto'
-        verbose_name_plural = 'Produtos'
-
 
 class Purchase(models.Model):
-    id_user = models.ForeignKey('User')
-    products = models.ManyToManyField(Product)
+    id_user = models.ForeignKey('Cart', verbose_name='Carrinho')
+    id_validator = models.ForeignKey('Validator', verbose_name='Validação')
+    value = models.FloatField('Valor', max_length=8)
+    transaction_code = models.CharField('Código de Transação', max_length=13)
     created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         verbose_name = 'Compra'
-        verbose_name_plural = 'Compras'
 
-# Nice! It could be even better tho. See this: https://docs.djangoproject.com/en/1.11/topics/db/examples/many_to_many/
-'''
-class Purchase_Product(models.Model):
-	id_purchase = models.ForeignKey('Purchase')
-	id_product = models.ForeignKey('Product')
-	price = models.FloatField('Preco', max_length=8)
-'''
+class Item(models.Model):
+    id_product = models.ForeignKey('Product', verbose_name='Produto')
+    id_cart = models.ForeignKey('Cart', verbose_name='Carrinho')
+    quantity = models.IntegerField(default=0)
+    created_at = models.DateTimeField('Data de Criação', auto_now_add=True)
+    class Meta:
+        verbose_name_plural = 'Itens'
+
+    def __str__(self):
+        return "{} unidade(s) de {}".format(self.quantity, self.id_product.name)
+
+class Cart(models.Model):
+    id_user = models.ForeignKey('User', verbose_name='Usuário')
+    created_at = models.DateTimeField('Data de Criação', auto_now_add=True)
+    finalized = models.BooleanField(default=False)
+    class Meta:
+        verbose_name = 'Carrinho'
+
+    def __str__(self):
+        return "{} - {}".format(self.id_user.username, self.pk)
+
+class QRCode(models.Model):
+    id_cart = models.ForeignKey('Cart', verbose_name='Carrinho')
+    token = models.CharField('Token', max_length=13)
+    image = models.ImageField(upload_to='images', editable=False)
+    created_at = models.DateTimeField('Data de Criação', auto_now_add=True)
+
+class Validator(models.Model):
+    id_cart = models.ForeignKey('Cart', verbose_name='Carrinho')
+    ok = models.BooleanField(default=False)
+    report = models.CharField('Relatório', max_length=13)
+    created_at = models.DateTimeField('Data de Criação', auto_now_add=True)
+    class Meta:
+        verbose_name = 'Validação'
+        verbose_name_plural = 'Validações'
