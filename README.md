@@ -86,7 +86,7 @@ Response: 200 OK
         
 *Enviar codigo de barras:
  
-    http://localhost:8000/product/scanner
+    http://localhost:8000/product/scanner/
     
     Method: POST
     
@@ -99,7 +99,7 @@ Response: 200 OK
     
 *Mostrar Produtos:
  
-    http://localhost:8000/product/showall
+    http://localhost:8000/product/showall/
     
     Method: GET
     
@@ -108,7 +108,7 @@ Response: 200 OK
  
 *Mostrar Compras:
      
-     http://localhost:8000/purchase/show
+     http://localhost:8000/purchase/show/
      
      Method: GET
      
