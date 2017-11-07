@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.core import validators
 from helpers.cpf import validate_CPF
+from helpers.barcode import validate_ean
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField('Username', max_length=128, unique=True)
@@ -33,7 +34,7 @@ class Product(models.Model):
     weight = models.FloatField('Peso', max_length=8),
     price = models.FloatField('Preco', max_length=8)
     image = models.ImageField(upload_to='images')
-    bar_code = models.CharField('Cod_barras', max_length=13)
+    bar_code = models.CharField('Cod_barras', max_length=13, validators=[validate_ean])
     def __str__(self):
         return str(self.name)
 
