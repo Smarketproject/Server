@@ -14,7 +14,7 @@ def validate_ean(value):
         int(value)
     except ValueError:
         raise ValidationError(error_messages['digits_only'])
-    if len(value) != 11:
+    if len(value) != 13:
         raise ValidationError(error_messages['max_digits'])
 """
 def computeChecksum(self, value):
