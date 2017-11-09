@@ -83,9 +83,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'smarket.wsgi.application'
 
 
-#MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'images')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 
-#MEDIA_URL = '/images/'
+MEDIA_URL = '/images/'
 
 
 # Database

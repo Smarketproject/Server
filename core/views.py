@@ -37,7 +37,7 @@ class Show_purchases(APIView):
 
 class Show_products(APIView):
 	def get(self, request):
-		objs = Product.objects.all()#.values('id', 'name', 'price', 'weight')
+		objs = Product.objects.all()
 		return Response(objs.values())
 
 
@@ -49,8 +49,9 @@ class Get_products(APIView):
 		obj = request.data
 		bar_code = obj.get('bar_code')
 		
-		
+
 		produto = Product.objects.filter(bar_code = bar_code).values()
+		
 		
 		return Response(produto)
 
