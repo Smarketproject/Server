@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserM
 from django.core import validators
 from helpers.cpf import validate_CPF
 from helpers.barcode import validate_ean
+import hashlib
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField('Username', max_length=128, unique=True)
@@ -71,11 +72,10 @@ class Cart(models.Model):
     def __str__(self):
         return "{} - {}".format(self.id_user.username, self.pk)
 
-class QRCode(models.Model):
-    id_cart = models.ForeignKey('Cart', verbose_name='Carrinho')
-    token = models.CharField('Token', max_length=13)
-    image = models.ImageField(upload_to='images', editable=False)
-    created_at = models.DateTimeField('Data de Criação', auto_now_add=True)
+    def gerarhash(self):
+        h = hashlib.md5()
+        h.update(self.pk)
+        return "{} - {}".format(self.h.hexdigest())
 
 class Validator(models.Model):
     id_cart = models.ForeignKey('Cart', verbose_name='Carrinho')
