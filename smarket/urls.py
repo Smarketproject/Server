@@ -44,6 +44,8 @@ urlpatterns = [
 
     url(r'^product/showall/$', views.Show_products.as_view(), name='Show_products'),
 
+    url(r'^cart/showall/$', views.Show_carts.as_view(), name='Show_carts'),
+
     url(r'^product/scanner/$', views.Get_products.as_view(), name='user')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
