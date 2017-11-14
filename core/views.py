@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import User, Purchase, Cart
 from .models import Product
-from rest_framework import viewsets, permissions, generics
+from rest_framework import viewsets, permissions, generics, status
 from .serializers import UserSerializer
 from .serializers import ProductSerializer
 from djoser.conf import settings
@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from rest_framework import authentication, permissions
 import json
 from django.http import JsonResponse
+from django.contrib.auth.hashers import check_password
 # Create your views here.
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -61,4 +62,12 @@ class Show_carts(APIView):
 		return Response(carts.values())
 
 
-
+class Update_password(APIView):
+	
+	def post(self, request):
+		if check_password(self.request.data.get('password'), self.request.user.password) == True:
+			User_object = self.request.user
+			User_object.set_password(self.request.data.get('new_password'))
+			User_object.save()
+			return Response("Senha Alterada com Sucesso")
+		else: return Response('Senha Invalida', status=status.HTTP_401_UNAUTHORIZED)

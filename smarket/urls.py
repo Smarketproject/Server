@@ -46,6 +46,8 @@ urlpatterns = [
 
     url(r'^cart/showall/$', views.Show_carts.as_view(), name='Show_carts'),
 
-    url(r'^product/scanner/$', views.Get_products.as_view(), name='user')
+    url(r'^product/scanner/$', views.Get_products.as_view(), name='user'),
+
+    url(r'^userup/$', views.Update_password.as_view(), name='userUp')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
