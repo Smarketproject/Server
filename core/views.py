@@ -55,3 +55,10 @@ class Get_products(APIView):
 		
 		return Response(produto)
 
+class Show_carts(APIView):
+	def get(self, request):
+		carts = Cart.objects.filter(finalized=True)
+		return Response(carts.values())
+
+
+
