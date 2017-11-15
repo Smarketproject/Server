@@ -4,6 +4,9 @@ from django.core import validators
 from helpers.cpf import validate_CPF
 from helpers.barcode import validate_ean
 import hashlib
+from pagseguro import PagSeguro
+from django.conf import settings
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField('Username', max_length=128, unique=True)
@@ -51,6 +54,37 @@ class Purchase(models.Model):
     class Meta:
         verbose_name = 'Compra'
 
+
+    def pagseguro(self, email, user):
+        pg = PagSeguro(
+            email=settings.PAGSEGURO_EMAIL, 
+            token=settings.PAGSEGURO_TOKEN,
+            config={'sandbox': settings.PAGSEGURO_SANDBOX}
+            )
+        pg.sender = {
+            'email': email
+        }
+        pg.reference_prefix = None
+        pg.shipping = None
+        pg.reference = self.pk
+        cart = Cart.objects.filter(id_user= user).values('id')
+        itens = Item.objects.filter(id_cart= cart)
+        print(itens.values())
+        for item in itens:
+            obj = Product.objects.filter(id=item.id_product_id).values('price')
+            price = obj[0].get('price')
+            #print (Product.objects.filter(id=item.id_product_id).values(*'price'))
+            pg.items.append(
+                {
+                    'id': item.id_product_id,
+                    'description': Product.objects.filter(id=item.id_product_id).values('name'),#item.id_product_name,
+                    'quantity': item.quantity,
+                    'amount': '%.2f' % price
+                }
+                )
+        return pg
+                
+
 class Item(models.Model):
     id_product = models.ForeignKey('Product', verbose_name='Produto')
     id_cart = models.ForeignKey('Cart', verbose_name='Carrinho')
@@ -85,3 +119,120 @@ class Validator(models.Model):
     class Meta:
         verbose_name = 'Validação'
         verbose_name_plural = 'Validações'
+
+#class ChangePass(models.Model):
+#    id_user = models.ForeignKey('User', verbose_name='Usuario')
+#    key = models.CharField('key', verbose_name ='Key')
+#    expira = models.DateTimeField
+
+
+class OrderManager(models.Manager):
+
+    def create_order(self, user):
+        order = self.create(user=user)
+        
+            
+        return order
+
+
+
+
+
+class Order(models.Model):
+
+    
+
+    STATUS_CHOICES = (
+        (0, 'Aguardando Pagamento'),
+        (1, 'Concluída'),
+        (2, 'Cancelada'),
+    )
+
+    PAYMENT_OPTION_CHOICES = (
+        ('deposit', 'Depósito'),
+        ('pagseguro', 'PagSeguro'),
+        ('paypal', 'Paypal'),
+    )
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Usuário')
+    status = models.IntegerField(
+        'Situação', choices=STATUS_CHOICES, default=0, blank=True
+    )
+    payment_option = models.CharField(
+        'Opção de Pagamento', choices=PAYMENT_OPTION_CHOICES, max_length=20,
+        default='deposit'
+    )
+
+    created = models.DateTimeField('Criado em', auto_now_add=True)
+    modified = models.DateTimeField('Modificado em', auto_now=True)
+
+    objects = OrderManager()
+
+    class Meta:
+        verbose_name = 'Pedido'
+        verbose_name_plural = 'Pedidos'
+
+    def __str__(self):
+        return 'Pedido #{}'.format(self.pk)
+
+
+    def total(self):
+        
+        cart = Cart.objects.filter(id_user= self.user).values('id')
+        itens = Item.objects.filter(id_cart= cart)
+        print(itens.values())
+        count = 0
+        for item in itens:
+            obj = Product.objects.filter(id=item.id_product_id).values('price')
+            price = obj[0].get('price')
+            quantity = item.quantity
+            count = count + (price * quantity)
+        
+        return count
+
+    def pagseguro_update_status(self, status):
+        if status == '3':
+            self.status = 1
+        elif status == '7':
+            self.status = 2
+        self.save()
+
+    def complete(self):
+        self.status = 1
+        self.save()
+
+    
+
+    def pagseguro(self, email, user):
+        pg = PagSeguro(
+            email=settings.PAGSEGURO_EMAIL, 
+            token=settings.PAGSEGURO_TOKEN,
+            config={'sandbox': settings.PAGSEGURO_SANDBOX}
+            )
+        pg.sender = {
+            'email': email
+        }
+        pg.reference_prefix = None
+        pg.shipping = None
+        pg.reference = self.pk
+        cart = Cart.objects.filter(id_user= user).values('id')
+        itens = Item.objects.filter(id_cart= cart)
+        print('EM BAIXO!!!')
+        print(Product.objects.filter(id=item.id_product_id).values('name')[0].get('name'))
+        for item in itens:
+            obj = Product.objects.filter(id=item.id_product_id).values('price')
+            price = obj[0].get('price')
+            obj2 = Product.objects.filter(id=item.id_product_id).values('name')
+            name = obj2[0].get('name')
+
+            #print (Product.objects.filter(id=item.id_product_id).values(*'price'))
+            pg.items.append(
+                {
+                    'id': item.id_product_id,
+                    'description': name,
+                    'quantity': item.quantity,
+                    'amount': '%.2f' % price
+                }
+                )
+        
+        return pg

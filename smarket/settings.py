@@ -156,3 +156,14 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'core.backends.ModelBackend',
     )
+
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'ArthurLenzi'
+EMAIL_HOST_PASSWORD = 'Arthur123'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+PAGSEGURO_TOKEN = '3AEDD3197C764616B8E0D05D1B4F1F23'
+PAGSEGURO_EMAIL = 'arthur_lenzi@hotmail.com'
+PAGSEGURO_SANDBOX = True

@@ -48,6 +48,13 @@ urlpatterns = [
 
     url(r'^product/scanner/$', views.Get_products.as_view(), name='user'),
 
-    url(r'^userup/$', views.Update_password.as_view(), name='userUp')
+    url(r'^userup/$', views.Update_password.as_view(), name='userUp'),
+
+    url(r'^finalizando/(?P<pk>\d+)/pagseguro/$', views.Pagseguro.as_view()),
+
+    url(
+        r'^notificacoes/pagseguro/$', views.pagseguro_notification,
+        name='pagseguro_notification'
+    ),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
