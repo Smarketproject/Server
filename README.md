@@ -13,6 +13,8 @@ sudo pip3 install -U djoser
 
 sudo pip3 install -U djangorestframework-jwt
 
+sudo pip install pagseguro
+
 Enable Django CORS
 sudo pip3 install django-cors-headers
 
