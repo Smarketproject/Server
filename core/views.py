@@ -42,7 +42,7 @@ class Show_purchases(APIView):
 		us = self.request.user.id
 		#entry.objects.filter(blog__name='Beatles Blog')
 		#Blog.objects.filter(entry__headline__contains='Lennon')
-		obj = Purchase.objects.filter(id_user = us).values('products__name', 'id_user', 'id', 'created_at')
+		obj = Purchase.objects.filter(id = us).values()
 
 		return Response(obj)
 

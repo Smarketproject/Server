@@ -35,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Product(models.Model):
     name = models.CharField('Nome', max_length=128, unique=True)
-    weight = models.FloatField('Peso', max_length=8),
+    weight = models.FloatField('Peso', max_length=8)
     price = models.FloatField('Preco', max_length=8)
     image = models.ImageField(upload_to='images')
     bar_code = models.CharField('Cod_barras', max_length=13, validators=[validate_ean])
@@ -46,11 +46,12 @@ class Product(models.Model):
         verbose_name = 'Produto'
 
 class Purchase(models.Model):
-    id_user = models.ForeignKey('Cart', verbose_name='Carrinho')
+    id_user = models.ForeignKey('User', verbose_name='Usuário')
     id_validator = models.ForeignKey('Validator', verbose_name='Validação')
     value = models.FloatField('Valor', max_length=8)
     transaction_code = models.CharField('Código de Transação', max_length=13)
     created_at = models.DateTimeField(auto_now_add=True)
+    products_name = models.ForeignKey('Product', verbose_name='Produto')
     class Meta:
         verbose_name = 'Compra'
 
