@@ -116,7 +116,7 @@ class Cart(models.Model):
         
         #cart = Cart.objects.filter(id_user= self.user).values('id')
         itens = Item.objects.filter(id_cart= self.id)
-        print(itens.values())
+        
         count = 0
         for item in itens:
             obj = Product.objects.filter(id=item.id_product_id).values('price')

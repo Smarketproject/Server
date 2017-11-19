@@ -60,4 +60,7 @@ urlpatterns = [
         name='pagseguro_notification'
     ),
 
+    url(r'^cart/$', views.CloseCart.as_view(), name='MakeCart'),
+
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

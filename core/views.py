@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.conf import settings as Dsettings
 from django.core.exceptions import ObjectDoesNotExist
 
-from .models import User, Purchase, Cart, Item, Product
+from .models import User, Purchase, Cart, Item, Product, Validator
 from .serializers import UserSerializer
 from .serializers import ProductSerializer
 
@@ -35,6 +35,8 @@ class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
 	serializer_class=UserSerializer
 
+
+
 class ProductViewSet(viewsets.ModelViewSet):
 	queryset = Product.objects.all()
 	serializer_class=ProductSerializer
@@ -44,6 +46,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class Show_purchases(APIView):
 	permission_classes = [permissions.IsAuthenticated]
 	authentication_classes = (authentication.TokenAuthentication,)
+	
 	def get(self, request, format=None):
 		us = self.request.user.id
 		cart = Cart.objects.filter(id_user = us).values('id')
@@ -56,13 +59,14 @@ class Show_purchases(APIView):
 			total = Cart.objects.get(pk=cart_id).total()
 			finalized = Cart.objects.get(pk=cart_id).finalized
 			itens = Item.objects.filter(id_cart= cart_id)
-			
+			purchase_id = Purchase.objects.filter(id_cart=cart_id).values('id')
 			prod = []
 			cart = {
 				'cart_id': cart_id,
 				'Products': prod,
 				'Total': total,
-				'Finalizado': finalized 
+				'Finalizado': finalized,
+				'purchase_id': purchase_id[0].get('id')  
 			}
 
 			for item in itens:
@@ -85,29 +89,29 @@ class Show_purchases(APIView):
 
 
 class Show_products(APIView):
+	
 	def get(self, request):
 		objs = Product.objects.all()
 		return Response(objs.values())
 
 
+
 class Get_products(APIView):
 
 	def post(self, request):
-		
-		
 		obj = request.data
 		bar_code = obj.get('bar_code')
-		
-
 		produto = Product.objects.filter(bar_code = bar_code).values()
-		
-		
 		return Response(produto)
 
+
+
 class Show_carts(APIView):
+	
 	def get(self, request):
 		carts = Cart.objects.filter(finalized=True)
 		return Response(carts.values())
+
 
 
 class Update_password(APIView):
@@ -122,14 +126,7 @@ class Update_password(APIView):
 
 
 
-
-
-
-
-
 class pagamento(APIView):
-	
-
 	
 	def get(self, request, *args, **kwargs):
 		
@@ -146,11 +143,6 @@ class pagamento(APIView):
             )
 		pg.reference_prefix = None
 		pg.shipping = None
-
-
-
-
-
 
 		
 		user_id = self.request.user.id
@@ -178,7 +170,7 @@ class pagamento(APIView):
 		response = pg.checkout()
 		
 		if Purchase.objects.filter(id=pk).values('payment_link')[0].get('payment_link') == '-':
-			print('!!!!!!')
+			
 			p = Purchase.objects.get(id=pk)
 			p.payment_link = response.payment_url
 			p.save()
@@ -187,6 +179,47 @@ class pagamento(APIView):
 		return Response(response.payment_url)
 
 
+
+class CloseCart(APIView):
+	permission_classes = [permissions.IsAuthenticated]
+	authentication_classes = (authentication.TokenAuthentication,)
+
+	def post(self, request):
+		user_id = self.request.user.id
+		obj = self.request.data.get('products')
+		
+		if obj == None:
+			return Response(' "products" is required. ')
+
+		for item in obj:
+			
+			if item.get('bar_code') == None:
+				return Response(' "bar_code" is required. ')
+
+			try:
+				product = Product.objects.get(bar_code=item.get('bar_code'))
+			except ObjectDoesNotExist:
+				return Response('O código de barras ( %s ) não está cadastrado.' %(item.get('bar_code')))
+
+			if item.get('quantity') == None:
+				return Response(' "quantity" is required.')
+
+		b = Cart(id_user=self.request.user)
+		b.save()
+		
+		for item in obj:
+			product = Product.objects.get(bar_code=item.get('bar_code'))
+			quantity = item.get('quantity')
+			iten = Item(id_product=product, id_cart=b, quantity=quantity).save()
+		purchase = Purchase(id_cart=b, id_validator=Validator.objects.get(pk=1), value=b.total(), transaction_code='-')
+		purchase.save()
+		
+		p_id = {
+			"purchase_id": purchase.id,
+			"status": "Compra Finalizada"
+		}
+		
+		return Response(p_id)
 
 
 
