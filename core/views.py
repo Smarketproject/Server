@@ -1,26 +1,32 @@
 from django.shortcuts import render, get_object_or_404, redirect 
-from .models import User, Purchase, Cart, Order
-from .models import Product
-from rest_framework import viewsets, permissions, generics, status
-from .serializers import UserSerializer
-from .serializers import ProductSerializer
-from djoser.conf import settings
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import authentication, permissions
-import json
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
 from django.core.mail import send_mail
 from django.views.generic import (
     RedirectView, TemplateView, ListView, DetailView, View
 )
+from django.core.urlresolvers import reverse
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.conf import settings as Dsettings
+from django.core.exceptions import ObjectDoesNotExist
+
+from .models import User, Purchase, Cart, Item, Product
+from .serializers import UserSerializer
+from .serializers import ProductSerializer
+
+from rest_framework import viewsets, permissions, generics, status
+from rest_framework import authentication, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+import json
 
 import logging
-from django.core.urlresolvers import reverse
-from django.views.decorators.csrf import csrf_exempt
 
-# Get an instance of a logger
+from djoser.conf import settings
+
+from pagseguro import PagSeguro
+
 logger = logging.getLogger(__name__)
 # Create your views here.
 
@@ -40,11 +46,42 @@ class Show_purchases(APIView):
 	authentication_classes = (authentication.TokenAuthentication,)
 	def get(self, request, format=None):
 		us = self.request.user.id
-		#entry.objects.filter(blog__name='Beatles Blog')
-		#Blog.objects.filter(entry__headline__contains='Lennon')
-		obj = Purchase.objects.filter(id = us).values()
+		cart = Cart.objects.filter(id_user = us).values('id')
+		hist = []
+		
 
-		return Response(obj)
+		for item in cart:
+			
+			cart_id = item.get('id')
+			total = Cart.objects.get(pk=cart_id).total()
+			finalized = Cart.objects.get(pk=cart_id).finalized
+			itens = Item.objects.filter(id_cart= cart_id)
+			
+			prod = []
+			cart = {
+				'cart_id': cart_id,
+				'Products': prod,
+				'Total': total,
+				'Finalizado': finalized 
+			}
+
+			for item in itens:
+				obj = Product.objects.filter(id=item.id_product_id).values()
+				price = obj[0].get('price')
+				name = obj[0].get('name')
+				bar_code = obj[0].get('bar_code')
+				prod.append(
+                	{
+                    	'id': item.id_product_id,
+                    	'name': str(name),
+                    	'quantity': item.quantity,
+                    	'price': '%.2f' % price,
+                    	'bar_code': bar_code
+                	})
+			
+			hist.append(cart)
+		
+		return Response(hist)
 
 
 class Show_products(APIView):
@@ -83,51 +120,78 @@ class Update_password(APIView):
 			return Response("Senha Alterada com Sucesso")
 		else: return Response('Senha Invalida', status=status.HTTP_401_UNAUTHORIZED)
 
-class RecuperarSenha(APIView):
 
-	def post(self, request):
-		email = self.request.data.get('email')
-		carinha = User.objects.filter(email = email).values()
 
-		return Response(carinha)
 
-class Pagseguro(RedirectView):
+
+
+
+
+class pagamento(APIView):
 	
-	permission_classes = [permissions.IsAuthenticated]
-	authentication_classes = (authentication.TokenAuthentication,)
+
 	
-	def get_redirect_url(self, *args, **kwargs):
-		order_pk = self.kwargs.get('pk')
+	def get(self, request, *args, **kwargs):
 		
-		print (order_pk)
-		logger.error(self.request.user.id)
 		
-		order = get_object_or_404(
-			Purchase.objects.filter(id=order_pk))
+		try:
+			purchase = Purchase.objects.get(pk=self.kwargs.get('pk'))
+		except ObjectDoesNotExist:
+			return Response('Esse id nao existe.')
 		
-		print(order)
+		pg = PagSeguro(
+            email=Dsettings.PAGSEGURO_EMAIL, 
+            token=Dsettings.PAGSEGURO_TOKEN,
+            config={'sandbox': Dsettings.PAGSEGURO_SANDBOX}
+            )
+		pg.reference_prefix = None
+		pg.shipping = None
+
+
+
+
+
+
 		
+		user_id = self.request.user.id
 		email = self.request.user.email
-		us = 4
-		pg = order.pagseguro(email, us)
+		pg.sender = {'email': email}
+		pk = self.kwargs.get('pk')
+		pg.reference = pk
 		
+		cart_id = Purchase.objects.filter(id=pk).values('id_cart_id')[0].get('id_cart_id')
+		
+		itens = Item.objects.filter(id_cart= cart_id)
+		
+		for item in itens:
+			obj = Product.objects.filter(id=item.id_product_id).values('price')
+			price = obj[0].get('price')
+			obj2 = Product.objects.filter(id=item.id_product_id).values('name')
+			name = obj2[0].get('name')
+			pg.items.append(
+                {
+                    'id': item.id_product_id,
+                    'description': str(name),
+                    'quantity': item.quantity,
+                    'amount': '%.2f' % price
+                })
 		response = pg.checkout()
 		
-		return response.payment_url
+		if Purchase.objects.filter(id=pk).values('payment_link')[0].get('payment_link') == '-':
+			print('!!!!!!')
+			p = Purchase.objects.get(id=pk)
+			p.payment_link = response.payment_url
+			p.save()
+		else:
+			return Response(Purchase.objects.filter(id=pk).values('payment_link')[0].get('payment_link'))
+		return Response(response.payment_url)
 
-class CheckoutView( TemplateView):
 
-   
 
-    def get(self, request, *args, **kwargs):
-        
-        order = Order.objects.create_order(
-                user=self.request.user
-            )
-        response = super(CheckoutView, self).get(request, *args, **kwargs)
-        response.context_data['order'] = order
-        
-        return response
+
+
+
+
 
 
 
@@ -136,18 +200,18 @@ def pagseguro_notification(request):
     notification_code = request.POST.get('notificationCode', None)
     if notification_code:
         pg = PagSeguro(
-            email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,
-            config={'sandbox': settings.PAGSEGURO_SANDBOX}
+            email=Dsettings.PAGSEGURO_EMAIL, token=Dsettings.PAGSEGURO_TOKEN,
+            config={'sandbox': Dsettings.PAGSEGURO_SANDBOX}
         )
         notification_data = pg.check_notification(notification_code)
         status = notification_data.status
         reference = notification_data.reference
         try:
-            order = Order.objects.get(pk=reference)
-        except Order.DoesNotExist:
-            pass
+            purchase = Purchase.objects.get(pk=reference)
+        except ObjectDoesNotExist:
+            return ("nao existe")
         else:
-            order.pagseguro_update_status(status)
+            purchase.update_status(status)
     return HttpResponse('OK')
 
 
@@ -155,4 +219,3 @@ def pagseguro_notification(request):
 
 
 
-checkout = CheckoutView.as_view()

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Product, Purchase, Item, Validator, Cart, Order
+from .models import User, Product, Purchase, Item, Validator, Cart
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .forms import UserAdminCreationForm, UserAdminForm
 
@@ -20,11 +20,33 @@ class UserAdmin(BaseUserAdmin):
 	search_fields = ['username', 'id']
 
 
-#PARA MOSTRAR NO PAINEL DE ADMIN
+
+class PurchaseAdmin(admin.ModelAdmin):
+    list_display = ('id', 'id_cart', 'status')
+
+class ItemAdmin(admin.ModelAdmin):
+    list_display = ('id', 'id_product', 'id_cart', 'quantity')
+
+class CartAdmin(admin.ModelAdmin):
+    list_display = ('id', 'id_user', 'finalized')
+
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'price', 'bar_code')
+
+
+
+
+
+
+
+
+admin.site.register(Purchase, PurchaseAdmin)
+
+
+
 admin.site.register(User, UserAdmin)
-admin.site.register(Product)
-admin.site.register(Purchase)
-admin.site.register(Item)
-admin.site.register(Cart)
+admin.site.register(Product, ProductAdmin)
+admin.site.register(Item, ItemAdmin)
+admin.site.register(Cart, CartAdmin)
 admin.site.register(Validator)
-admin.site.register(Order)
+

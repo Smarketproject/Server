@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+
 from core import views
+
 from rest_framework import routers
+
 from djoser import views as viewd
 from django.conf import settings
 from django.conf.urls.static import static
@@ -50,7 +53,7 @@ urlpatterns = [
 
     url(r'^userup/$', views.Update_password.as_view(), name='userUp'),
 
-    url(r'^finalizando/(?P<pk>\d+)/pagseguro/$', views.Pagseguro.as_view()),
+    url(r'^finalizando/(?P<pk>\d+)/pagseguro/$', views.pagamento.as_view()),
 
     url(
         r'^notificacoes/pagseguro/$', views.pagseguro_notification,
