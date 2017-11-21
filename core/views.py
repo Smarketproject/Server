@@ -27,6 +27,14 @@ from djoser.conf import settings
 
 from pagseguro import PagSeguro
 
+import pyqrcode
+
+import png
+
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.core.files.images import ImageFile 
+from django.core.files import File
 logger = logging.getLogger(__name__)
 # Create your views here.
 
@@ -60,13 +68,15 @@ class Show_purchases(APIView):
 			finalized = Cart.objects.get(pk=cart_id).finalized
 			itens = Item.objects.filter(id_cart= cart_id)
 			purchase_id = Purchase.objects.filter(id_cart=cart_id).values('id')
+			purchase = Purchase.objects.get(id_cart=cart_id)
 			prod = []
 			cart = {
 				'cart_id': cart_id,
 				'Products': prod,
 				'Total': total,
 				'Finalizado': finalized,
-				'purchase_id': purchase_id[0].get('id')  
+				'purchase_id': purchase_id[0].get('id'),  
+				'created_at': purchase.created_at
 			}
 
 			for item in itens:
@@ -74,6 +84,32 @@ class Show_purchases(APIView):
 				price = obj[0].get('price')
 				name = obj[0].get('name')
 				bar_code = obj[0].get('bar_code')
+				
+				#prod.append(
+                #	{
+                #    	'id': item.id_product_id,
+                #    	'name': str(name),
+                #    	'quantity': item.quantity,
+                #    	'price': '%.2f' % price,
+                #    	'bar_code': bar_code
+                #	})
+			
+			hist.append(cart)
+		
+		return Response(hist)
+
+class Show_cart(APIView):
+	def get(self, request, *args, **kwargs):
+		pk = self.kwargs.get('pk')
+		itens = Item.objects.filter(id_cart= pk)
+		
+		prod = []
+		for item in itens:
+				obj = Product.objects.filter(id=item.id_product_id).values()
+				price = obj[0].get('price')
+				name = obj[0].get('name')
+				bar_code = obj[0].get('bar_code')
+				
 				prod.append(
                 	{
                     	'id': item.id_product_id,
@@ -82,10 +118,7 @@ class Show_purchases(APIView):
                     	'price': '%.2f' % price,
                     	'bar_code': bar_code
                 	})
-			
-			hist.append(cart)
-		
-		return Response(hist)
+		return Response(prod)
 
 
 class Show_products(APIView):
@@ -220,6 +253,23 @@ class CloseCart(APIView):
 		}
 		
 		return Response(p_id)
+
+
+
+class Teste(APIView):
+	pass
+	def get(self, request):
+		pass
+		a = pyqrcode.create(12355555555555555)
+		b = a.png("teste.png")
+		ImageFile(a.png("teste.png")).save()
+		default_storage.save('/home/arthur/smarket/Server/images/', ImageFile(a.png("teste.png")))
+		return Response(a.png("teste.png"))
+
+		#QUANDO O QR CODE É GERADO?
+		user1=User(name='abc')
+		user1.pic.save('abc.png', File(open('/tmp/pic.png', 'r')))
+
 
 
 
