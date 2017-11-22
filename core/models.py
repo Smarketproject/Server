@@ -6,7 +6,7 @@ from django.conf import settings
 from helpers.cpf import validate_CPF
 from helpers.barcode import validate_ean
 
-import hashlib
+import hashlib, uuid
 
 from pagseguro import PagSeguro
 
@@ -99,6 +99,8 @@ class Cart(models.Model):
     id_user = models.ForeignKey('User', verbose_name='Usuário')
     created_at = models.DateTimeField('Data de Criação', auto_now_add=True)
     finalized = models.BooleanField(default=False)
+    hashed_id = models.CharField('Hash', max_length=13)
+
     class Meta:
         verbose_name = 'Carrinho'
 

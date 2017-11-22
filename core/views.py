@@ -19,6 +19,9 @@ from rest_framework import authentication, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from hashid_field import HashidField
+import hashlib, uuid
+
 import json
 
 import logging
@@ -246,6 +249,19 @@ class CloseCart(APIView):
 			iten = Item(id_product=product, id_cart=b, quantity=quantity).save()
 		purchase = Purchase(id_cart=b, id_validator=Validator.objects.get(pk=1), value=b.total(), transaction_code='-')
 		purchase.save()
+
+
+		#i = purchase.id 
+		#hashed_id = HashidField(i)
+		#hashed_id.save()
+
+		i = purchase.id
+		salt = uuid.uuid4().hex
+		hash_ =  hashlib.sha512()
+		hash_.update(('i'+salt).encode('utf-8')) 
+		hashed_id =  hash_.hexdigest()
+		print(hashed_id)
+		
 		
 		p_id = {
 			"purchase_id": purchase.id,
