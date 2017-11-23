@@ -313,11 +313,16 @@ class CloseCart(APIView):
 
 class ReadQR(APIView):
 	def post(self, request):
-		request.data.get()
-
-
- 	  	
-
+		hash1 = request.data.get("hash")
+		cart = Cart.objects.get(hashed_id=hash1)
+		cart_id = cart.id
+		user_id = cart.id_user_id
+		nome = User.objects.get(pk=user_id)
+		res = {
+			"name": nome.username,
+			"id": cart_id 
+		}
+		return Response(res)
 
 
 
