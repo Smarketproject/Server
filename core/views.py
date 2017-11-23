@@ -135,12 +135,15 @@ class Peso(APIView):
 
 	def post(self, request):
 		peso = request.data.get('weight')
+		cart_id = request.data.get('id')
+
 		if peso == None:
 			return Response(' "weight" is required. ')
 
+		total = Cart.objects.get(pk=cart_id).total_weight()
 
 
-		return Response(peso)
+		return Response(total)
 
 
 
@@ -274,9 +277,10 @@ class CloseCart(APIView):
 		hash_ =  hashlib.sha512()
 		hash_.update(('i'+salt).encode('utf-8')) 
 		hashed_id =  hash_.hexdigest()
-		print(hashed_id)
+		a = hashed_id[0:13]
 		
-		
+		b.hashed_id = a
+		b.save()		
 		p_id = {
 			"purchase_id": purchase.id,
 			"status": "Compra Finalizada"
@@ -286,19 +290,27 @@ class CloseCart(APIView):
 
 
 
-class Teste(APIView):
-	pass
-	def get(self, request):
-		pass
-		a = pyqrcode.create(12355555555555555)
-		b = a.png("teste.png")
-		ImageFile(a.png("teste.png")).save()
-		default_storage.save('/home/arthur/smarket/Server/images/', ImageFile(a.png("teste.png")))
-		return Response(a.png("teste.png"))
+#class Teste(APIView):
+#	pass
+#	def get(self, request):
+#		pass
+#		a = pyqrcode.create(12355555555555555)
+#		b = a.png("teste.png")
+#		ImageFile(a.png("teste.png")).save()
+#		default_storage.save('/home/arthur/smarket/Server/images/', ImageFile(a.png("teste.png")))
+#		return Response(a.png("teste.png"))
 
-		#QUANDO O QR CODE É GERADO?
-		user1=User(name='abc')
-		user1.pic.save('abc.png', File(open('/tmp/pic.png', 'r')))
+#		#QUANDO O QR CODE É GERADO?
+#		user1=User(name='abc')
+#		user1.pic.save('abc.png', File(open('/tmp/pic.png', 'r')))
+
+
+class ReadQR(APIView):
+	def post(self, request):
+		request.data.get()
+
+
+ 	  	
 
 
 
@@ -327,6 +339,13 @@ def pagseguro_notification(request):
             purchase.update_status(status)
     return HttpResponse('OK')
 
+class Image(APIView):
+	def verification(self,request):
+		verification = request.POST.get('verification')
+		if verification == True:
+			return Response("OK")
+		if verification == False:
+			return Response("Wrong")
 
 
 

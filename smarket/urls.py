@@ -62,12 +62,15 @@ urlpatterns = [
 
     url(r'^cart/$', views.CloseCart.as_view(), name='MakeCart'),
 
-    url(r'^teste/$', views.Teste.as_view(), name='MakeCart'),
+    #url(r'^teste/$', views.Teste.as_view(), name='MakeCart'),
 
     url(r'^cart/(?P<pk>\d+)/$', views.Show_cart.as_view(), name='ShoewCart'),
 
     url(r'^peso/$', views.Peso.as_view(), name='MakeCart'),
 
     url(r'^fake/', include('fake.urls')),
+    
+    url(r'^cart/scanner/$', views.ReadQR.as_view(), name='MakeCart'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
