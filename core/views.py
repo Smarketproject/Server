@@ -301,6 +301,9 @@ class Teste(APIView):
 		user1.pic.save('abc.png', File(open('/tmp/pic.png', 'r')))
 
 
+ 	  	
+
+
 
 
 

@@ -128,6 +128,22 @@ class Cart(models.Model):
         
         return count
 
+     def total_weight(self):
+        
+        itens = Item.objects.filter(id_cart= self.id)
+        
+        count = 0
+        for item in itens:
+            obj = Product.objects.filter(id=item.weight).values('weight')
+            weight = obj[0].get('weight')
+            quantity = item.quantity
+            count = count + (weight * quantity)
+        
+        return count
+
+
+
+
 class Validator(models.Model):
     id_cart = models.ForeignKey('Cart', verbose_name='Carrinho')
     ok = models.BooleanField(default=False)
