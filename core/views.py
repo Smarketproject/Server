@@ -131,6 +131,20 @@ class Show_products(APIView):
 		return Response(objs.values())
 
 
+class Peso(APIView):
+
+	def post(self, request):
+		peso = request.data.get('weight')
+		if peso == None:
+			return Response(' "weight" is required. ')
+
+
+
+		return Response(peso)
+
+
+
+
 
 class Get_products(APIView):
 

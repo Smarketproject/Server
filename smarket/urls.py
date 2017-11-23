@@ -66,4 +66,6 @@ urlpatterns = [
 
     url(r'^cart/(?P<pk>\d+)/$', views.Show_cart.as_view(), name='ShoewCart'),
 
+    url(r'^peso/$', views.Peso.as_view(), name='MakeCart'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
