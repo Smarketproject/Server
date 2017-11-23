@@ -287,23 +287,29 @@ class CloseCart(APIView):
 
 
 
-class Teste(APIView):
-	pass
-	def get(self, request):
-		pass
-		a = pyqrcode.create(12355555555555555)
-		b = a.png("teste.png")
-		ImageFile(a.png("teste.png")).save()
-		default_storage.save('/home/arthur/smarket/Server/images/', ImageFile(a.png("teste.png")))
-		return Response(a.png("teste.png"))
+#class Teste(APIView):
+#	pass
+#	def get(self, request):
+#		pass
+#		a = pyqrcode.create(12355555555555555)
+#		b = a.png("teste.png")
+#		ImageFile(a.png("teste.png")).save()
+#		default_storage.save('/home/arthur/smarket/Server/images/', ImageFile(a.png("teste.png")))
+#		return Response(a.png("teste.png"))
 
-		#QUANDO O QR CODE É GERADO?
-		user1=User(name='abc')
-		user1.pic.save('abc.png', File(open('/tmp/pic.png', 'r')))
+#		#QUANDO O QR CODE É GERADO?
+#		user1=User(name='abc')
+#		user1.pic.save('abc.png', File(open('/tmp/pic.png', 'r')))
+
 
 class ReadQR(APIView):
 	def post(self, request):
 		request.data.get()
+
+
+ 	  	
+
+
 
 
 
