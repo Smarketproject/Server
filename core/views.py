@@ -274,9 +274,10 @@ class CloseCart(APIView):
 		hash_ =  hashlib.sha512()
 		hash_.update(('i'+salt).encode('utf-8')) 
 		hashed_id =  hash_.hexdigest()
-		print(hashed_id)
+		a = hashed_id[0:13]
 		
-		
+		b.hashed_id = a
+		b.save()		
 		p_id = {
 			"purchase_id": purchase.id,
 			"status": "Compra Finalizada"
@@ -300,7 +301,9 @@ class Teste(APIView):
 		user1=User(name='abc')
 		user1.pic.save('abc.png', File(open('/tmp/pic.png', 'r')))
 
-
+class ReadQR(APIView):
+	def post(self, request):
+		request.data.get()
 
 
 
