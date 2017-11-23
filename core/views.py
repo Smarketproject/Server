@@ -345,6 +345,13 @@ def pagseguro_notification(request):
             purchase.update_status(status)
     return HttpResponse('OK')
 
+class Image(APIView):
+	def verification(self,request):
+		verification = request.POST.get('verification')
+		if verification == True:
+			return Response("OK")
+		if verification == False:
+			return Response("Wrong")
 
 
 
