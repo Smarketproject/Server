@@ -142,8 +142,14 @@ class Peso(APIView):
 
 		total = Cart.objects.get(pk=cart_id).total_weight()
 
+		peso = float(peso)
+		total1 = total - (total * 0.1)
+		total2 = total + (total * 0.1)
+		
+		if (peso < total2) and (peso > total1):
+			return Response("ok")
 
-		return Response(total)
+		return Response("Peso não bate.")
 
 
 

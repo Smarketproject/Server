@@ -134,7 +134,7 @@ class Cart(models.Model):
         
         count = 0
         for item in itens:
-            obj = Product.objects.filter(id=item.weight).values('weight')
+            obj = Product.objects.filter(id=item.id_product_id).values('weight')
             weight = obj[0].get('weight')
             quantity = item.quantity
             count = count + (weight * quantity)
