@@ -3,6 +3,12 @@ Server with Django 1.11.6
 
 sudo apt-get install python3-pip
 
+sudo pip3 install pypng
+
+sudo pip3 install pyqrcode
+
+sudo pip3 install django-hashid-field
+
 sudo pip3 install Django
 
 sudo pip3 install djangorestframework
@@ -13,9 +19,10 @@ sudo pip3 install -U djoser
 
 sudo pip3 install -U djangorestframework-jwt
 
-sudo pip install pagseguro
+sudo pip3 install pagseguro
 
 Enable Django CORS
+
 sudo pip3 install django-cors-headers
 
 
