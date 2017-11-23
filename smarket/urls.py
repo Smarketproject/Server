@@ -62,7 +62,7 @@ urlpatterns = [
 
     url(r'^cart/$', views.CloseCart.as_view(), name='MakeCart'),
 
-    url(r'^teste/$', views.Teste.as_view(), name='MakeCart'),
+    #url(r'^teste/$', views.Teste.as_view(), name='MakeCart'),
 
     url(r'^cart/(?P<pk>\d+)/$', views.Show_cart.as_view(), name='ShoewCart'),
 

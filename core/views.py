@@ -135,12 +135,15 @@ class Peso(APIView):
 
 	def post(self, request):
 		peso = request.data.get('weight')
+		cart_id = request.data.get('id')
+
 		if peso == None:
 			return Response(' "weight" is required. ')
 
+		total = Cart.objects.get(pk=cart_id).total_weight()
 
 
-		return Response(peso)
+		return Response(total)
 
 
 

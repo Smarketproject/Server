@@ -128,7 +128,7 @@ class Cart(models.Model):
         
         return count
 
-     def total_weight(self):
+    def total_weight(self):
         
         itens = Item.objects.filter(id_cart= self.id)
         
