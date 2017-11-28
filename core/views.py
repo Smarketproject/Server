@@ -288,6 +288,7 @@ class CloseCart(APIView):
 		b.hashed_id = a
 		b.save()		
 		p_id = {
+			"hash": a,
 			"purchase_id": purchase.id,
 			"status": "Compra Finalizada"
 		}
