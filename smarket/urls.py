@@ -43,7 +43,7 @@ urlpatterns = [
     
     url(r'^me/$', viewd.UserView.as_view(), name='user'),
 
-    url(r'^purchase/show/$', views.Show_purchases.as_view(), name='Show_purchases'),
+    url(r'^purchase/show/$', views.Show_purchases.as_view(), name='Mostrar Compras'),
 
     url(r'^product/showall/$', views.Show_products.as_view(), name='Show_products'),
 
@@ -66,11 +66,13 @@ urlpatterns = [
 
     url(r'^cart/(?P<pk>\d+)/$', views.Show_cart.as_view(), name='ShoewCart'),
 
-    url(r'^peso/$', views.Peso.as_view(), name='MakeCart'),
+    url(r'^peso/$', views.Peso.as_view(), name='Peso'),
 
     url(r'^fake/', include('fake.urls')),
     
-    url(r'^cart/scanner/$', views.ReadQR.as_view(), name='MakeCart'),
+    url(r'^cart/scanner/$', views.ReadQR.as_view(), name='Para o Leitor de QRCODE'),
+
+    url(r'^purchase/update/$', views.UpStatus.as_view(), name='Atualizar status da compra'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

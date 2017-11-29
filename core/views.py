@@ -67,20 +67,35 @@ class Show_purchases(APIView):
 		for item in cart:
 			
 			cart_id = item.get('id')
+			try: 
+				purchase = Purchase.objects.get(id_cart=cart_id)
+			except ObjectDoesNotExist:
+				continue 
 			total = Cart.objects.get(pk=cart_id).total()
 			finalized = Cart.objects.get(pk=cart_id).finalized
 			itens = Item.objects.filter(id_cart= cart_id)
 			purchase_id = Purchase.objects.filter(id_cart=cart_id).values('id')
 			purchase = Purchase.objects.get(id_cart=cart_id)
 			prod = []
+			
+
 			cart = {
 				'cart_id': cart_id,
 				'Products': prod,
 				'Total': total,
 				'Finalizado': finalized,
 				'purchase_id': purchase_id[0].get('id'),  
-				'created_at': purchase.created_at
+				'created_at': purchase.created_at,
+				'situação': purchase.status
 			}
+
+			if purchase.status == 0:
+				cart = {
+					#'cart_id': cart_id,
+					'purchase_id': purchase.id,
+					'situação': 0,
+					'Link': purchase.payment_link 
+				}
 
 			for item in itens:
 				obj = Product.objects.filter(id=item.id_product_id).values()
@@ -286,6 +301,7 @@ class CloseCart(APIView):
 		a = hashed_id[0:13]
 		
 		b.hashed_id = a
+		b.finalized = True
 		b.save()		
 		p_id = {
 			"hash": a,
@@ -358,6 +374,20 @@ class Image(APIView):
 			return Response("OK")
 		if verification == False:
 			return Response("Wrong")
+
+class UpStatus(APIView):
+	def post(self, request):
+		status = self.request.data.get('status')
+		purchase_id = self.request.data.get('purchase_id')
+		
+		if status == None:
+			return Response(' "status" id required. ')
+		if purchase_id == None:
+			return Response(' "purchase_id" id required. ')
+		
+		purchase = Purchase.objects.get(pk=purchase_id)
+		purchase.update_status(status)
+		return Response(purchase.status)
 
 
 

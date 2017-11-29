@@ -76,10 +76,12 @@ class Purchase(models.Model):
 
 
     def update_status(self, status):
+        self.status = status
         if status == '3':
             self.status = 1
         elif status == '7':
             self.status = 2
+        
         self.save()
    
                 
