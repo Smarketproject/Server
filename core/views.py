@@ -155,12 +155,14 @@ class Peso(APIView):
 
 	def post(self, request):
 		peso = request.data.get('weight')
-		cart_id = request.data.get('id')
-
+		
+		#cart_id = request.data.get('id')
+		scan = Scan.objects.get(pk=1)
+		#cart_id = Cart.objects
 		if peso == None:
 			return Response(' "weight" is required. ')
 
-		total = Cart.objects.get(pk=cart_id).total_weight()
+		total = Cart.objects.get(pk=scan.cart_id).total_weight()
 
 		peso = float(peso)
 		total1 = total - (total * Dsettings.MARGEM_DE_ERRO)

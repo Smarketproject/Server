@@ -102,6 +102,8 @@ class Cart(models.Model):
     created_at = models.DateTimeField('Data de Criação', auto_now_add=True)
     finalized = models.BooleanField(default=False)
     hashed_id = models.CharField('Hash', max_length=13)
+    weigth_validation = models.BooleanField(default=False)
+    image_validation = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Carrinho'
