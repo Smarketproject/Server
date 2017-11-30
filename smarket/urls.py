@@ -74,5 +74,8 @@ urlpatterns = [
 
     url(r'^purchase/update/$', views.UpStatus.as_view(), name='Atualizar status da compra'),
 
+    url(r'^carrinho/produto/$', views.Carrinho.as_view(), name='Atualizar status da compra'),
+
+    url(r'^validacao/$', views.Cqsabe.as_view(), name='Atualizar status da compra'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

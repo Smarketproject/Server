@@ -158,17 +158,22 @@ class Peso(APIView):
 		
 		#cart_id = request.data.get('id')
 		scan = Scan.objects.get(pk=1)
+		cart = scan.cart_id
+		print(cart.id)
+		#print(scan.values())
 		#cart_id = Cart.objects
 		if peso == None:
 			return Response(' "weight" is required. ')
 
-		total = Cart.objects.get(pk=scan.cart_id).total_weight()
+		total = Cart.objects.get(pk=cart.id).total_weight()
 
 		peso = float(peso)
 		total1 = total - (total * Dsettings.MARGEM_DE_ERRO)
 		total2 = total + (total * Dsettings.MARGEM_DE_ERRO)
 		
 		if (peso < total2) and (peso > total1):
+			cart.weigth_validation = True
+			cart.save()
 			return Response("ok")
 
 		return Response("Peso não bate.")
@@ -408,7 +413,42 @@ class UpStatus(APIView):
 		purchase.update_status(status)
 		return Response(purchase.status)
 
+class Carrinho(APIView):
+	def get(self, request):
+		scan = Scan.objects.get(pk=1)
+		cart = scan.cart_id
 
+		itens = Item.objects.filter(id_cart= cart.id)
+		
+		prod = []
+		for item in itens:
+				obj = Product.objects.filter(id=item.id_product_id).values()
+				#price = obj[0].get('price')
+				name = obj[0].get('name')
+				#bar_code = obj[0].get('bar_code')
+				
+				prod.append(
+                	{
+                    	#'id': item.id_product_id,
+                    	'name': str(name),
+                    	#'quantity': item.quantity,
+                    	#'price': '%.2f' % price,
+                    	#'bar_code': bar_code
+                	})
+		return Response(prod)
+
+class Cqsabe(APIView):
+	def post(self, request):
+		val = self.request.data.get('validator')
+		if val == "False":
+			return Response("Validação Incorreta")
+		if val == "True":
+			scan = Scan.objects.get(pk=1)
+			cart = scan.cart_id
+			cart.image_validation = True
+			cart.save()
+			return Response("OK")
+		return Response("Invalido")
 
 
 
