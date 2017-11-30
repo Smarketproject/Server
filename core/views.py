@@ -87,7 +87,7 @@ class Show_purchases(APIView):
 				'Finalizado': finalized,
 				'purchase_id': purchase_id[0].get('id'),  
 				'created_at': purchase.created_at,
-				'situação': purchase.status,
+				'situacao': purchase.status,
 				'hash': hashed_id
 			}
 
@@ -95,9 +95,10 @@ class Show_purchases(APIView):
 				cart = {
 					#'cart_id': cart_id,
 					'purchase_id': purchase.id,
-					'situação': 0,
+					'situacao': 0,
 					'Link': purchase.payment_link,
 					'hash': hashed_id,
+					'created_at': purchase.created_at,
 					'cart_id': cart_id
 				}
 
