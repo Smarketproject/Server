@@ -37,21 +37,21 @@ urlpatterns = [
 
     url(r'^', include(router.urls)),
 
-    url(r'^login/', viewd.TokenCreateView.as_view(), name='login2'),
+    url(r'^login/', viewd.TokenCreateView.as_view(), name='Login'),
     
-    url(r'^logout/', viewd.TokenDestroyView.as_view(),name='logout2'),
+    url(r'^logout/', viewd.TokenDestroyView.as_view(),name='Logout'),
     
     url(r'^me/$', viewd.UserView.as_view(), name='user'),
 
     url(r'^purchase/show/$', views.Show_purchases.as_view(), name='Mostrar Compras'),
 
-    url(r'^product/showall/$', views.Show_products.as_view(), name='Show_products'),
+    url(r'^product/showall/$', views.Show_products.as_view(), name='Mostrar Produtos Cadastrados'),
 
     #url(r'^cart/showall/$', views.Show_carts.as_view(), name='Show_carts'),
 
-    url(r'^product/scanner/$', views.Get_products.as_view(), name='user'),
+    url(r'^product/scanner/$', views.Get_products.as_view(), name='Ler codigo de barras'),
 
-    url(r'^userup/$', views.Update_password.as_view(), name='userUp'),
+    url(r'^userup/$', views.Update_password.as_view(), name='Trocar sernha'),
 
     url(r'^finalizando/(?P<pk>\d+)/pagseguro/$', views.pagamento.as_view()),
 
@@ -60,13 +60,13 @@ urlpatterns = [
         name='pagseguro_notification'
     ),
 
-    url(r'^cart/$', views.CloseCart.as_view(), name='MakeCart'),
+    url(r'^cart/$', views.CloseCart.as_view(), name='Finalizar o carrinho'),
 
     #url(r'^teste/$', views.Teste.as_view(), name='MakeCart'),
 
-    url(r'^cart/(?P<pk>\d+)/$', views.Show_cart.as_view(), name='ShoewCart'),
+    url(r'^cart/(?P<pk>\d+)/$', views.Show_cart.as_view(), name='Mostrar os itens do carrinho'),
 
-    url(r'^peso/$', views.Peso.as_view(), name='Peso'),
+    url(r'^peso/$', views.Peso.as_view(), name='Comparar Peso'),
 
     url(r'^fake/', include('fake.urls')),
     

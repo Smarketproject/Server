@@ -73,6 +73,7 @@ class Show_purchases(APIView):
 				continue 
 			total = Cart.objects.get(pk=cart_id).total()
 			finalized = Cart.objects.get(pk=cart_id).finalized
+			hashed_id = Cart.objects.get(pk=cart_id).hashed_id
 			itens = Item.objects.filter(id_cart= cart_id)
 			purchase_id = Purchase.objects.filter(id_cart=cart_id).values('id')
 			purchase = Purchase.objects.get(id_cart=cart_id)
@@ -86,7 +87,8 @@ class Show_purchases(APIView):
 				'Finalizado': finalized,
 				'purchase_id': purchase_id[0].get('id'),  
 				'created_at': purchase.created_at,
-				'situação': purchase.status
+				'situação': purchase.status,
+				'hash': hashed_id
 			}
 
 			if purchase.status == 0:
@@ -94,7 +96,9 @@ class Show_purchases(APIView):
 					#'cart_id': cart_id,
 					'purchase_id': purchase.id,
 					'situação': 0,
-					'Link': purchase.payment_link 
+					'Link': purchase.payment_link,
+					'hash': hashed_id,
+					'cart_id': cart_id
 				}
 
 			for item in itens:
@@ -158,8 +162,8 @@ class Peso(APIView):
 		total = Cart.objects.get(pk=cart_id).total_weight()
 
 		peso = float(peso)
-		total1 = total - (total * 0.1)
-		total2 = total + (total * 0.1)
+		total1 = total - (total * Dsettings.MARGEM_DE_ERRO)
+		total2 = total + (total * Dsettings.MARGEM_DE_ERRO)
 		
 		if (peso < total2) and (peso > total1):
 			return Response("ok")

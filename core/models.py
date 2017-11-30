@@ -16,7 +16,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField('Username', max_length=128, unique=True)
     email = models.EmailField('Email', unique=True, max_length=128, validators=[validators.EmailValidator])
     cpf = models.CharField('Cpf', max_length=11, unique=True, validators=[validate_CPF])
-    func_smarket_active = models.BooleanField('Smarket', default=False)
+    func_smarket_active = models.BooleanField('Smarket', default=True)
     is_staff = models.BooleanField('Equipe', default=False)
     is_active = models.BooleanField('Ativo', default=True)
     date_joined = models.DateTimeField('Data de entrada', auto_now_add=True)
