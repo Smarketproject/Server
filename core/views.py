@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.conf import settings as Dsettings
 from django.core.exceptions import ObjectDoesNotExist
 
-from .models import User, Purchase, Cart, Item, Product, Validator
+from .models import User, Purchase, Cart, Item, Product, Validator, Scan
 from .serializers import UserSerializer
 from .serializers import ProductSerializer
 
@@ -336,7 +336,19 @@ class CloseCart(APIView):
 class ReadQR(APIView):
 	def post(self, request):
 		hash1 = request.data.get("hash")
+		
+		try:
+			cart = Cart.objects.get(hashed_id=hash1)
+		except ObjectDoesNotExist:
+			return ("Hash nao existe")
+
+
+
+
 		cart = Cart.objects.get(hashed_id=hash1)
+		scan = Scan.objects.get(pk=1)
+		scan.cart_id = cart
+		scan.save()
 		cart_id = cart.id
 		user_id = cart.id_user_id
 		nome = User.objects.get(pk=user_id)

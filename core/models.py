@@ -155,6 +155,8 @@ class Validator(models.Model):
         verbose_name = 'Validação'
         verbose_name_plural = 'Validações'
 
+class Scan(models.Model):
+    cart_id = models.ForeignKey('Cart', verbose_name='Carrinho')
 #class ChangePass(models.Model):
 #    id_user = models.ForeignKey('User', verbose_name='Usuario')
 #    key = models.CharField('key', verbose_name ='Key')
