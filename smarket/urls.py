@@ -51,7 +51,7 @@ urlpatterns = [
 
     url(r'^product/scanner/$', views.Get_products.as_view(), name='Ler codigo de barras'),
 
-    url(r'^userup/$', views.Update_password.as_view(), name='Trocar sernha'),
+    url(r'^userup/$', views.Update_password.as_view(), name='Trocar senha'),
 
     url(r'^finalizando/(?P<pk>\d+)/pagseguro/$', views.pagamento.as_view()),
 

@@ -440,9 +440,9 @@ class Carrinho(APIView):
 class Cqsabe(APIView):
 	def post(self, request):
 		val = self.request.data.get('validator')
-		if val == "False":
+		if val == None:
 			return Response("Validação Incorreta")
-		if val == "True":
+		if val == "on":
 			scan = Scan.objects.get(pk=1)
 			cart = scan.cart_id
 			cart.image_validation = True
